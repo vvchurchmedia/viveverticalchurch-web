@@ -183,12 +183,27 @@ a {
     gap: 30px;
   }
 
+  .header-inner {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    gap: 16px;
+    padding: 24px 20px;
+  }
+
+  .logo {
+    justify-self: center;
+  }
+
+  .header-nav {
+    justify-self: center;
+  }
+
   .logo img {
-    width: 150px;
+    width: 300px;
   }
 
   .giving-btn img {
-    height: 50px;
+    height: 150px;
   }
 }
 
