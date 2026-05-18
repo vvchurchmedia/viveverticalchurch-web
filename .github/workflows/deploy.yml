@@ -1,0 +1,72 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+      - staging
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          path: main
+
+      - name: Check if staging branch exists
+        id: check-staging
+        run: |
+          if git ls-remote --heads origin staging | grep -q staging; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+          fi
+        working-directory: main
+
+      - name: Checkout staging
+        if: steps.check-staging.outputs.exists == 'true'
+        uses: actions/checkout@v4
+        with:
+          ref: staging
+          path: staging-branch
+
+      - name: Build site
+        run: |
+          mkdir -p _site
+          # Copy main branch to root
+          cp -r main/* _site/
+          rm -rf _site/.git _site/.github
+          # Copy staging branch to /staging/ subfolder
+          if [ "${{ steps.check-staging.outputs.exists }}" = "true" ]; then
+            mkdir -p _site/staging
+            cp -r staging-branch/* _site/staging/
+            rm -rf _site/staging/.git _site/staging/.github
+          fi
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
