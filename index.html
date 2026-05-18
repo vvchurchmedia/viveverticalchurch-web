@@ -4,6 +4,31 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Vive Vertical Church</title>
+    <meta
+      name="description"
+      content="Vive Vertical Church - Una iglesia para toda la familia en Grand Prairie, TX. A church for the whole family. Domingos 11AM."
+    />
+    <meta property="og:title" content="Vive Vertical Church" />
+    <meta
+      property="og:description"
+      content="Una iglesia para toda la familia en Grand Prairie, TX. Domingos 11AM. A church for the whole family."
+    />
+    <meta
+      property="og:image"
+      content="https://www.viveverticalchurch.com/images/bienvenidos.png"
+    />
+    <meta property="og:url" content="https://www.viveverticalchurch.com" />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Vive Vertical Church" />
+    <meta
+      name="twitter:description"
+      content="Una iglesia para toda la familia en Grand Prairie, TX. A church for the whole family."
+    />
+    <meta
+      name="twitter:image"
+      content="https://www.viveverticalchurch.com/images/bienvenidos.png"
+    />
     <link rel="icon" href="favicon.ico" />
     <link rel="apple-touch-icon" href="images/apple-touch-icon.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -25,6 +50,7 @@
           <a
             href="https://viveverticalchurch.breezechms.com/give/online"
             target="_blank"
+            rel="noopener noreferrer"
             class="giving-btn"
           >
             <img src="images/giving-button.png" alt="Giving - Donar" />
@@ -46,7 +72,11 @@
       <div class="middle-grid">
         <!-- Row 1: Horario + Map/Address -->
         <div class="middle-cell">
-          <img src="images/horario.jpeg" alt="Horario - Service Schedule" />
+          <img
+            src="images/horario.jpeg"
+            alt="Horario - Service Schedule"
+            loading="lazy"
+          />
         </div>
         <div class="middle-cell">
           <div class="map-container">
@@ -64,6 +94,7 @@
           <img
             src="images/ubicacion.png"
             alt="Ubicacion - Location with QR Code"
+            loading="lazy"
           />
         </div>
       </div>
@@ -72,10 +103,22 @@
     <!-- Photo Gallery -->
     <section class="gallery">
       <div class="gallery-grid">
-        <img src="images/fotos-05.png" alt="Community photo 1" />
-        <img src="images/fotos-06.png" alt="Community photo 2" />
-        <img src="images/fotos-08.png" alt="Community photo 3" />
-        <img src="images/fotos-07.png" alt="Community photo 4" />
+        <picture>
+          <source srcset="images/fotos-05.webp" type="image/webp" />
+          <img src="images/fotos-05.png" alt="Community photo 1" loading="lazy" />
+        </picture>
+        <picture>
+          <source srcset="images/fotos-06.webp" type="image/webp" />
+          <img src="images/fotos-06.png" alt="Community photo 2" loading="lazy" />
+        </picture>
+        <picture>
+          <source srcset="images/fotos-08.webp" type="image/webp" />
+          <img src="images/fotos-08.png" alt="Community photo 3" loading="lazy" />
+        </picture>
+        <picture>
+          <source srcset="images/fotos-07.webp" type="image/webp" />
+          <img src="images/fotos-07.png" alt="Community photo 4" loading="lazy" />
+        </picture>
       </div>
     </section>
 
@@ -85,6 +128,7 @@
         <a
           href="https://www.facebook.com/profile.php?id=61552775499711"
           target="_blank"
+          rel="noopener noreferrer"
           aria-label="Facebook"
         >
           <svg viewBox="0 0 24 24" width="32" height="32" fill="currentColor">
@@ -96,6 +140,7 @@
         <a
           href="https://instagram.com/viveverticalchurch"
           target="_blank"
+          rel="noopener noreferrer"
           aria-label="Instagram"
         >
           <svg viewBox="0 0 24 24" width="32" height="32" fill="currentColor">
@@ -107,6 +152,7 @@
         <a
           href="https://www.youtube.com/@viveverticalchurch"
           target="_blank"
+          rel="noopener noreferrer"
           aria-label="YouTube"
         >
           <svg viewBox="0 0 24 24" width="32" height="32" fill="currentColor">
@@ -117,12 +163,13 @@
         </a>
       </div>
       <p class="copyright">
-        &copy;
-        <script>
-          document.write(new Date().getFullYear());
-        </script>
-        Vive Vertical Church. All rights reserved.
+        &copy; <span id="year"></span> Vive Vertical Church. All rights
+        reserved.
       </p>
+      <script>
+        document.getElementById('year').textContent =
+          new Date().getFullYear();
+      </script>
     </footer>
   </body>
 </html>

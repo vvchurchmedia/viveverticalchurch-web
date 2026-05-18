@@ -125,6 +125,10 @@ a {
   gap: 16px;
 }
 
+.gallery-grid picture {
+  width: 100%;
+}
+
 .gallery-grid img {
   width: 100%;
   aspect-ratio: 1 / 1;
@@ -164,7 +168,7 @@ a {
 
 .copyright {
   font-size: 0.85rem;
-  color: #4F5655;
+  color: #9CA3A0;
   margin-top: 10px;
 }
 
@@ -200,7 +204,7 @@ a {
   }
 
   .giving-btn img {
-    height: 150px;
+    height: 80px;
   }
 }
 
@@ -211,6 +215,6 @@ a {
   }
 
   .header-inner {
-    padding: 8px 12px;
+    padding: 16px 16px;
   }
 }
