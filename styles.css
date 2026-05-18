@@ -56,6 +56,26 @@ a {
 
 .header-nav {
   justify-self: end;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.contacto-btn {
+  display: inline-block;
+  padding: 12px 28px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #ffffff;
+  background-color: #42b58c;
+  border-radius: 8px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.contacto-btn:hover {
+  background-color: #369b76;
+  transform: translateY(-1px);
 }
 
 .giving-btn img {
