@@ -47,7 +47,7 @@
         <p class="contact-subtitle">Nos encantaria saber de ti.</p>
         <form
           id="contact-form"
-          action="https://formspree.io/f/mkoenbgv"
+          action="https://os7yhj1jt8.execute-api.us-east-1.amazonaws.com/contact"
           method="POST"
           class="contact-form"
         >
@@ -132,8 +132,13 @@
 
         fetch(form.action, {
           method: "POST",
-          body: new FormData(form),
-          headers: { Accept: "application/json" },
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name: form.name.value,
+            email: form.email.value,
+            phone: form.phone.value,
+            message: form.message.value,
+          }),
         })
           .then(function (response) {
             if (response.ok) {
