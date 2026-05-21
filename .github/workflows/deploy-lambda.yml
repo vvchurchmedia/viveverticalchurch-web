@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - main
+      - staging
     paths:
       - 'lambda/**'
 
@@ -37,6 +38,11 @@ jobs:
 
       - name: Deploy to Lambda
         run: |
+          if [ "${{ github.ref_name }}" = "main" ]; then
+            FUNCTION_NAME="vivevertical-contact"
+          else
+            FUNCTION_NAME="vivevertical-contact-staging"
+          fi
           aws lambda update-function-code \
-            --function-name vivevertical-contact \
+            --function-name "$FUNCTION_NAME" \
             --zip-file fileb://function.zip
