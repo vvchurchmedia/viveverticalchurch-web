@@ -30,9 +30,9 @@ function buildWelcomeEmail(name) {
 
 function buildWelcomeSms(name) {
   return (
-    `Hola ${name}! Gracias por comunicarte con Vive Vertical Church. ` +
-    `Te invitamos este domingo a las 11AM - 830 Mayfield Rd, Unit 560, Grand Prairie, TX 75052. ` +
-    `Te esperamos!`
+    `¡Hola ${name}! Gracias por comunicarte con Vive Vertical Church. ` +
+    `Te invitamos este sábado a las 10:45AM - 830 Mayfield Rd, Unit 560, Grand Prairie, TX 75052. ` +
+    `Visita www.viveverticalchurch.com - ¡Te esperamos!`
   );
 }
 
