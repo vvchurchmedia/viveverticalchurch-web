@@ -63,7 +63,16 @@ export async function handler(event) {
 
   try {
     const body = JSON.parse(event.body);
-    const { name, email, phone, message } = body;
+    const { website, name, email, phone, message } = body;
+
+    // Honeypot check — bots fill this hidden field, humans don't
+    if (website) {
+      return {
+        statusCode: 200,
+        headers: CORS_HEADERS,
+        body: JSON.stringify({ message: "Mensaje enviado correctamente." }),
+      };
+    }
 
     if (!name || !email || !message) {
       return {

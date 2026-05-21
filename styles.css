@@ -252,6 +252,14 @@ a {
   background-color: #1e3a2c;
 }
 
+.hp-field {
+  position: absolute;
+  left: -9999px;
+  opacity: 0;
+  height: 0;
+  overflow: hidden;
+}
+
 .form-error {
   color: #c0392b;
   font-size: 0.95rem;
