@@ -13,7 +13,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Noto+Sans:wght@400;500;600&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Noto+Sans:wght@400;500;600&family=Dancing+Script:wght@600&display=swap"
       rel="stylesheet"
     />
     <link rel="stylesheet" href="../styles.css" />
@@ -40,11 +40,13 @@
       </div>
     </header>
 
-    <!-- Contact Form -->
+    <!-- Welcome Form -->
     <section class="contact-section contact-page">
-      <div class="contact-inner">
-        <h2>Contacto</h2>
-        <p class="contact-subtitle">Nos encantaría saber de ti.</p>
+      <div class="welcome-card">
+        <div class="welcome-card-header">
+          <h2>BIENVENIDO</h2>
+          <p class="welcome-subtitle">¡Queremos conocerte!</p>
+        </div>
         <form
           id="contact-form"
           action="https://staging-api.viveverticalchurch.com/contact"
@@ -60,16 +62,42 @@
             <input type="text" id="name" name="name" required />
           </div>
           <div class="form-group">
-            <label for="email">Correo Electrónico</label>
-            <input type="email" id="email" name="email" required />
+            <label for="address">Dirección</label>
+            <input type="text" id="address" name="address" />
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="phone">Teléfono</label>
+              <input type="tel" id="phone" name="phone" placeholder="(123) 456-7890" />
+            </div>
+            <div class="form-group">
+              <label for="email">Email</label>
+              <input type="email" id="email" name="email" required placeholder="correo@ejemplo.com" />
+            </div>
           </div>
           <div class="form-group">
-            <label for="phone">Teléfono</label>
-            <input type="tel" id="phone" name="phone" />
-          </div>
-          <div class="form-group">
-            <label for="message">Mensaje</label>
-            <textarea id="message" name="message" rows="5" required></textarea>
+            <label class="interests-label">Me gustaría saber más acerca de:</label>
+            <div class="interests-grid">
+              <label class="interest-option">
+                <input type="checkbox" name="interests" value="Bautismo" />
+                <span>Bautismo</span>
+              </label>
+              <label class="interest-option">
+                <input type="checkbox" name="interests" value="Servir" />
+                <span>Servir</span>
+              </label>
+              <label class="interest-option">
+                <input type="checkbox" name="interests" value="Oración" />
+                <span>Oración</span>
+              </label>
+              <label class="interest-option interest-otro">
+                <input type="checkbox" name="interests" value="Otro" id="otro-check" />
+                <span>Otro</span>
+              </label>
+            </div>
+            <div class="otro-field" id="otro-field" style="display:none;">
+              <input type="text" id="otro-text" name="otro-text" placeholder="¿Qué te gustaría saber?" />
+            </div>
           </div>
           <button type="submit" class="submit-btn">Enviar</button>
         </form>
@@ -126,7 +154,27 @@
     </footer>
     <script>
       var form = document.getElementById("contact-form");
-      var contactInner = document.querySelector(".contact-inner");
+      var welcomeCard = document.querySelector(".welcome-card");
+      var otroCheck = document.getElementById("otro-check");
+      var otroField = document.getElementById("otro-field");
+      var phoneInput = document.getElementById("phone");
+
+      phoneInput.addEventListener("input", function () {
+        var digits = phoneInput.value.replace(/\D/g, "");
+        if (digits.length > 10) digits = digits.substring(0, 10);
+        if (digits.length >= 7) {
+          phoneInput.value = "(" + digits.substring(0, 3) + ") " + digits.substring(3, 6) + "-" + digits.substring(6);
+        } else if (digits.length >= 4) {
+          phoneInput.value = "(" + digits.substring(0, 3) + ") " + digits.substring(3);
+        } else if (digits.length > 0) {
+          phoneInput.value = "(" + digits;
+        }
+      });
+
+      otroCheck.addEventListener("change", function () {
+        otroField.style.display = otroCheck.checked ? "block" : "none";
+        if (!otroCheck.checked) document.getElementById("otro-text").value = "";
+      });
 
       form.addEventListener("submit", function (e) {
         e.preventDefault();
@@ -134,23 +182,40 @@
         btn.disabled = true;
         btn.textContent = "Enviando...";
 
+        var interests = [];
+        form.querySelectorAll('input[name="interests"]:checked').forEach(function (cb) {
+          interests.push(cb.value);
+        });
+
+        var otroText = document.getElementById("otro-text").value;
+        if (otroText) {
+          var idx = interests.indexOf("Otro");
+          if (idx !== -1) interests[idx] = "Otro: " + otroText;
+        }
+
         fetch(form.action, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             website: form.website.value,
             name: form.name.value,
-            email: form.email.value,
+            address: form.address.value,
             phone: form.phone.value,
-            message: form.message.value,
+            email: form.email.value,
+            interests: interests,
           }),
         })
           .then(function (response) {
             if (response.ok) {
-              contactInner.innerHTML =
-                '<h2>Gracias</h2>' +
-                '<p class="contact-subtitle">Tu mensaje fue enviado. Te responderemos pronto.</p>' +
-                '<a href="../" class="submit-btn" style="display:inline-block;text-decoration:none;max-width:300px;margin:0 auto;">Volver al inicio</a>';
+              welcomeCard.innerHTML =
+                '<div class="welcome-card-header">' +
+                '<h2>GRACIAS</h2>' +
+                '<p class="welcome-subtitle">¡Nos alegra conocerte!</p>' +
+                '</div>' +
+                '<div style="padding: 30px; text-align: center;">' +
+                '<p style="font-size: 1.1rem; line-height: 1.6; margin-bottom: 24px;">Te responderemos lo más pronto posible.</p>' +
+                '<a href="../" class="submit-btn" style="display:inline-block;text-decoration:none;max-width:300px;margin:0 auto;">Volver al inicio</a>' +
+                '</div>';
             } else {
               btn.disabled = false;
               btn.textContent = "Enviar";

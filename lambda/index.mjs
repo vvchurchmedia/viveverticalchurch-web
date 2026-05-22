@@ -36,14 +36,15 @@ function buildWelcomeSms(name) {
   );
 }
 
-function buildNotificationEmail(name, email, phone, message) {
+function buildNotificationEmail(name, email, phone, address, interests) {
   return {
-    subject: `Nuevo contacto: ${name}`,
+    subject: `Nuevo visitante: ${name}`,
     html: renderTemplate(notificationTemplate, {
       name,
       email,
       phone: phone || "No proporcionado",
-      message,
+      address: address || "No proporcionada",
+      interests: interests && interests.length > 0 ? interests.join(", ") : "Ninguno seleccionado",
     }),
   };
 }
@@ -63,7 +64,7 @@ export async function handler(event) {
 
   try {
     const body = JSON.parse(event.body);
-    const { website, name, email, phone, message } = body;
+    const { website, name, email, phone, address, interests } = body;
 
     // Honeypot check — bots fill this hidden field, humans don't
     if (website) {
@@ -74,11 +75,11 @@ export async function handler(event) {
       };
     }
 
-    if (!name || !email || !message) {
+    if (!name || !email) {
       return {
         statusCode: 400,
         headers: CORS_HEADERS,
-        body: JSON.stringify({ error: "Nombre, correo y mensaje son requeridos." }),
+        body: JSON.stringify({ error: "Nombre y correo son requeridos." }),
       };
     }
 
@@ -100,7 +101,7 @@ export async function handler(event) {
     );
 
     // Send notification email to the church
-    const notification = buildNotificationEmail(name, email, phone, message);
+    const notification = buildNotificationEmail(name, email, phone, address, interests);
     tasks.push(
       ses.send(
         new SendEmailCommand({
