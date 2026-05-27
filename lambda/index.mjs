@@ -1,12 +1,11 @@
 import { readFileSync } from "node:fs";
-import { SESClient, SendEmailCommand } from "@aws-sdk/client-ses";
 import { SNSClient, PublishCommand } from "@aws-sdk/client-sns";
 
-const ses = new SESClient();
 const sns = new SNSClient();
 
-const FROM_EMAIL = "info@viveverticalchurch.com";
-const NOTIFY_EMAIL = process.env.NOTIFY_EMAIL || FROM_EMAIL;
+const RESEND_API_KEY = process.env.RESEND_API_KEY;
+const FROM_EMAIL = "Vive Vertical Church <info@viveverticalchurch.com>";
+const NOTIFY_EMAIL = process.env.NOTIFY_EMAIL || "info@viveverticalchurch.com";
 
 const CORS_HEADERS = {
   "Access-Control-Allow-Origin": process.env.ALLOWED_ORIGIN || "https://www.viveverticalchurch.com",
@@ -49,6 +48,24 @@ function buildNotificationEmail(name, email, phone, address, interests) {
   };
 }
 
+async function sendEmail({ from, to, subject, html }) {
+  const res = await fetch("https://api.resend.com/emails", {
+    method: "POST",
+    headers: {
+      "Authorization": `Bearer ${RESEND_API_KEY}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ from, to: [to], subject, html }),
+  });
+
+  if (!res.ok) {
+    const error = await res.text();
+    throw new Error(`Resend error (${res.status}): ${error}`);
+  }
+
+  return res.json();
+}
+
 function formatPhone(phone) {
   const digits = phone.replace(/\D/g, "");
   if (digits.length === 10) return `+1${digits}`;
@@ -88,31 +105,23 @@ export async function handler(event) {
     // Send welcome email to the person
     const welcomeEmail = buildWelcomeEmail(name);
     tasks.push(
-      ses.send(
-        new SendEmailCommand({
-          Source: FROM_EMAIL,
-          Destination: { ToAddresses: [email] },
-          Message: {
-            Subject: { Data: welcomeEmail.subject },
-            Body: { Html: { Data: welcomeEmail.html } },
-          },
-        })
-      )
+      sendEmail({
+        from: FROM_EMAIL,
+        to: email,
+        subject: welcomeEmail.subject,
+        html: welcomeEmail.html,
+      })
     );
 
     // Send notification email to the church
     const notification = buildNotificationEmail(name, email, phone, address, interests);
     tasks.push(
-      ses.send(
-        new SendEmailCommand({
-          Source: FROM_EMAIL,
-          Destination: { ToAddresses: [NOTIFY_EMAIL] },
-          Message: {
-            Subject: { Data: notification.subject },
-            Body: { Html: { Data: notification.html } },
-          },
-        })
-      )
+      sendEmail({
+        from: FROM_EMAIL,
+        to: NOTIFY_EMAIL,
+        subject: notification.subject,
+        html: notification.html,
+      })
     );
 
     // Send welcome SMS if phone number provided
